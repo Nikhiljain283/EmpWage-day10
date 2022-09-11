@@ -6,25 +6,32 @@ public class EmpWage {
 	static final int isPartTime = 2;
 	static final int isAbsent = 3;
 
-	public String company;
-	int empRatePerHr;
-	int maxWorkingDays;
-	int maxWorkingHrs;
+	int noOfCompany = 0;
+	public CompanyEmpWage[] companyEmpWage;
 
-	public EmpWage(String company, int empRatePerHr, int maxWorkingDays, int maxWorkingHrs) {
-		this.company = company;
-		this.empRatePerHr = empRatePerHr;
-		this.maxWorkingDays = maxWorkingDays;
-		this.maxWorkingHrs = maxWorkingHrs;
+	EmpWage() {
+		companyEmpWage = new CompanyEmpWage[5];
 	}
 
-	public void computeWage() {
+	public void addCompany(String company, int empRatePerHr, int maxWorkingDays, int maxWorkingHrs) {
+		companyEmpWage[noOfCompany] = new CompanyEmpWage(company, empRatePerHr, maxWorkingDays, maxWorkingHrs);
+		noOfCompany++;
+	}
+
+	public void computeEmpWage() {
+		for (int i = 0; i < noOfCompany; i++) {
+			companyEmpWage[i].setTotalEmpWage(this.computeWage(companyEmpWage[i]));
+			System.out.println(companyEmpWage[i]);
+		}
+	}
+
+	public int computeWage(CompanyEmpWage companyEmp) {
 		int empHrs = 0;
 		int empWage = 0;
 		int days = 0;
 		int totalEmpHrs = 0;
 
-		while (days < maxWorkingDays && totalEmpHrs <= maxWorkingHrs) {
+		while (days < companyEmp.maxWorkingDays && totalEmpHrs <= companyEmp.maxWorkingHrs) {
 			int empCheck = (int) (Math.random() * 3) + 1;
 			days++;
 			switch (empCheck) {
@@ -40,20 +47,7 @@ public class EmpWage {
 			}
 			totalEmpHrs += empHrs;
 		}
-		System.out.println("Company name : " + company);
-		System.out.println("Emp rate per hour : "+empRatePerHr);
-		System.out.println("Total employee hours : " + totalEmpHrs);
-		empWage = totalEmpHrs * empRatePerHr;
-		System.out.println("employee Monthly wage : " + empWage);
-		System.out.println();
-	}
-
-	public static void main(String[] args) {
-		System.out.println("Welcome to employee wage computation");
-		System.out.println(" ");
-		EmpWage dmart = new EmpWage("Dmart", 120, 20, 170);
-		EmpWage google = new EmpWage("Google", 140, 21, 160);
-		dmart.computeWage();
-		google.computeWage();
+		empWage = totalEmpHrs * companyEmp.empRatePerHr;
+		return empWage;
 	}
 }
